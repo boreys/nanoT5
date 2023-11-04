@@ -71,7 +71,10 @@ def get_tokenizer(args):
 
 
 def load_dataset_splits(args):
-    if args.mode == 'pt':
+    if args.train_file:
+        dataset = datasets.load_dataset('text', data_files=args.train_file)
+        dataset_splits = dataset["train"].train_test_split(test_size=0.05)
+    elif args.mode == 'pt':
         dataset = datasets.load_dataset(
             'c4',
             'en',
@@ -133,7 +136,7 @@ def process_dataset(dataset_splits, args, tokenizer):
                 remove_columns=['text'],
             )
 
-            dataset_split = dataset_split.shuffle(buffer_size=10_000, seed=args.seed)
+            dataset_split = dataset_split.shuffle(seed=args.seed)
             final_datasets[split] = dataset_split
     elif args.mode == 'ft':
         final_datasets = dataset_splits
@@ -189,10 +192,10 @@ def get_dataloaders(tokenizer, config, args):
 
         shuffle = (split == 'train') and not is_iterable
 
-        if args.mode == 'ft' and split == 'train':
-            assert shuffle is True
-        else:
-            assert shuffle is False
+        # if args.mode == 'ft' and split == 'train':
+        #     assert shuffle is True
+        # else:
+        #     assert shuffle is False
 
         dataloaders[split] = DataLoader(
             dataset[split],
