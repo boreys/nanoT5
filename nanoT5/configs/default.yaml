@@ -5,7 +5,7 @@ defaults:
 
 # Experiment args
 mode: 'pt'
-device: cpu
+device: gpu
 precision: 'bf16'
 eval_only: false
 predict_only: false
