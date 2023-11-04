@@ -5,14 +5,16 @@ defaults:
 
 # Experiment args
 mode: 'pt'
-device: gpu
+device: cpu
 precision: 'bf16'
 eval_only: false
 predict_only: false
-seed: 2137
+seed: 42
+train_file: ''
+output_dir: ''
 
 model:
-  klass: local_t5
+  klass: hf_t5
   name: 'google/t5-v1_1-base'
   overwrite:
     dropout_rate: 0.0
@@ -26,15 +28,15 @@ data:
   input_length: 512
   mlm_probability: 0.15
   mean_noise_span_length: 3.0
-  num_workers: 8
+  num_workers: 4
 
 optim:
   name: adamwscale
   base_lr: 2e-2
   batch_size: 128
-  total_steps: 65536
+  total_steps: 5000
   epochs: -1 # If it's > 0 it overwrites total_steps
-  warmup_steps: 10000
+  warmup_steps: 100
   lr_scheduler: cosine
   weight_decay: 0.0
   grad_clip: 1.0
