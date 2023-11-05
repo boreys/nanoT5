@@ -3,3 +3,10 @@ env.yaml
 logs
 scripts
 .neptune
+bin
+etc
+__pycache__
+lib
+share
+include
+pyvenv.cfg
