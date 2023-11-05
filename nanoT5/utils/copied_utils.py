@@ -98,8 +98,9 @@ class DataCollatorForT5MLM:
         sentinel_ids = np.where(
             start_indices != 0, np.cumsum(start_indices, axis=-1), start_indices
         )
+        maxS = self.tokenizer.get_vocab()['<extra_id_0>'] + 1 # => 32100
         sentinel_ids = np.where(
-            sentinel_ids != 0, (len(self.tokenizer) - sentinel_ids), 0
+            sentinel_ids != 0, (maxS - sentinel_ids), 0
         )
         sentinel_ids -= mask_indices - start_indices
 
