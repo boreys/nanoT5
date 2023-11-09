@@ -12,6 +12,8 @@ predict_only: false
 seed: 42
 train_file: ''
 output_dir: ''
+dataset: ''
+dataset_name: ''
 
 model:
   klass: hf_t5
