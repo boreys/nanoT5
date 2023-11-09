@@ -6,6 +6,7 @@ from datasets.iterable_dataset import IterableDataset
 from transformers import (
     AutoTokenizer,
     T5ForConditionalGeneration,
+    LongT5ForConditionalGeneration,
     AutoConfig,
 )
 
@@ -21,6 +22,7 @@ from .t5_model import MyT5
 def get_model(args, config):
     klass = {
         'hf_t5': T5ForConditionalGeneration,
+        'hf_lt5': LongT5ForConditionalGeneration,
         'local_t5': MyT5,
     }[args.model.klass]
 
@@ -30,7 +32,7 @@ def get_model(args, config):
     elif args.model.random_init:
         model = klass(config)
     else:
-        assert klass == T5ForConditionalGeneration, 'To load HFs weights you need to use HF model'
+        # assert klass == T5ForConditionalGeneration, 'To load HFs weights you need to use HF model'
         model = klass.from_pretrained(
             args.model.name,
             config=config,
@@ -73,6 +75,9 @@ def get_tokenizer(args):
 def load_dataset_splits(args):
     if args.train_file:
         dataset = datasets.load_dataset('text', data_files=args.train_file)
+        dataset_splits = dataset["train"].train_test_split(test_size=0.05)
+    elif args.dataset and args.dataset_name:
+        dataset = datasets.load_dataset(args.dataset, name=args.dataset_name)
         dataset_splits = dataset["train"].train_test_split(test_size=0.05)
     elif args.mode == 'pt':
         dataset = datasets.load_dataset(
